@@ -11,14 +11,14 @@ This library exposes one main function: `parse_manifest`. You give it a `dict` f
 Exemple usage:
 ```python
 import requests
-from momapa import parse_manifest
+from momapa import MojangManifest
 
 data = requests.get('https://piston-meta.mojang.com/mc/game/version_manifest_v2.json').json()
 
 for v in data.get('versions'):
     if v.get('id') == '1.20.1':
         data = requests.get(v.get('url')).json()
-        manifest = parse_manifest(data)
+        manifest = MojangManifest.parse(data)
 
         print(manifest.id)
         print(manifest.jar_files.server.hash)
@@ -32,7 +32,6 @@ for v in data.get('versions'):
 - [x] Parsing arguments (1.12+)
 - [x] Parsing java version manifest
 - [ ] Parsing libraries (Legacy)
-- [ ] Parsing libraries (1.12+)
 - [ ] Parsing libraries (1.20.4+)
 - [ ] Rule validator
 - [ ] Ruleset validator
