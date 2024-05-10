@@ -31,7 +31,7 @@ for v in data.get('versions'):
 - [x] Parsing arguments (Legacy)
 - [x] Parsing arguments (1.12+)
 - [x] Parsing java version manifest
-- [ ] Parsing libraries (Legacy)
-- [ ] Parsing libraries (1.20.4+)
+- [~] Parsing libraries (Legacy)
+- [x] Parsing libraries (1.20.4+)
 - [ ] Rule validator
 - [ ] Ruleset validator
