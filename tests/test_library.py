@@ -120,22 +120,61 @@ def test_library_current_norules():
     l = GameLibrary.parse(lib_dict)
     assert l is not None
     assert isinstance(l, GameLibrary)
-    assert l.name == 'io.netty:netty-transport-native-epoll:4.1.97.Final'
+    assert l.name == "io.netty:netty-transport-native-epoll:4.1.97.Final"
     assert l.is_natives is True
     assert l.extract_natives is False
 
     assert l.artifact is not None
-    assert l.artifact.path == 'io/netty/netty-transport-native-epoll/4.1.97.Final/netty-transport-native-epoll-4.1.97.Final-linux-aarch_64.jar'
-    assert l.artifact.hash == '5514744c588190ffda076b35a9b8c9f24946a960'
+    path = "io/netty/netty-transport-native-epoll/4.1.97.Final/netty-transport-native-epoll-4.1.97.Final-linux-aarch_64.jar"
+    assert l.artifact.path == path
+    assert l.artifact.hash == "5514744c588190ffda076b35a9b8c9f24946a960"
     assert l.artifact.size == 40427
-    assert l.artifact.url == 'https://url/netty-transport-native-epoll-4.1.97.Final-linux-aarch_64.jar'
+    assert l.artifact.url == "https://url/netty-transport-native-epoll-4.1.97.Final-linux-aarch_64.jar"
 
     assert l.rules is not None
     assert len(l.rules) == 1
 
     r = l.rules[0]
-    assert r.action == 'allow'
+    assert r.action == "allow"
     assert r.features is None
     assert r.os is not None
-    assert r.os.get('name') == OS.LINUX
-    assert r.os.get('arch') == Architecture.ARM64
+    assert r.os.get("name") == OS.LINUX
+    assert r.os.get("arch") == Architecture.ARM64
+
+
+def test_library_current_noarch():
+    lib_dict = {
+        "downloads": {
+            "artifact": {
+                "path": "org/lwjgl/lwjgl-freetype/3.3.3/lwjgl-freetype-3.3.3-natives-macos.jar",
+                "sha1": "1e9b635b5c16b515527b905749be59223e338c4d",
+                "size": 1142682,
+                "url": "https://url/lwjgl-freetype-3.3.3-natives-macos.jar",
+            }
+        },
+        "name": "org.lwjgl:lwjgl-freetype:3.3.3:natives-macos",
+        "rules": [{"action": "allow", "os": {"name": "osx"}}],
+    }
+
+    l = GameLibrary.parse(lib_dict)
+    assert l is not None
+    assert isinstance(l, GameLibrary)
+    assert l.name == "org.lwjgl:lwjgl-freetype:3.3.3"
+    assert l.is_natives is True
+    assert l.extract_natives is False
+
+    assert l.artifact is not None
+    assert l.artifact.path == "org/lwjgl/lwjgl-freetype/3.3.3/lwjgl-freetype-3.3.3-natives-macos.jar"
+    assert l.artifact.hash == "1e9b635b5c16b515527b905749be59223e338c4d"
+    assert l.artifact.size == 1142682
+    assert l.artifact.url == "https://url/lwjgl-freetype-3.3.3-natives-macos.jar"
+
+    assert l.rules is not None
+    assert len(l.rules) == 1
+
+    r = l.rules[0]
+    assert r.action == "allow"
+    assert r.features is None
+    assert r.os is not None
+    assert r.os.get("name") == OS.OSX
+    assert r.os.get("arch") == Architecture.AMD64
