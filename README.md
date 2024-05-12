@@ -59,7 +59,7 @@ print(rv.validate_ruleset(rules)) # Returns either "allow" or "disallow"
 - [x] Parsing arguments (Legacy)
 - [x] Parsing arguments (1.12+)
 - [x] Parsing java version manifest
-- [~] Parsing libraries (Legacy)
+- [x] Parsing libraries (Legacy, not 100% accurate though)
 - [x] Parsing libraries (1.20.4+)
 - [x] Parsing the "Logging" file
 - [x] Rule validator
