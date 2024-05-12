@@ -1,6 +1,7 @@
 from datetime import datetime
 from typing import List, Optional, Self
 
+from .logging import Logging
 from .file import File
 from .asset import AssetIndex
 from .argument import GameArgumentSet
@@ -54,6 +55,8 @@ class MojangManifest:
     minimum_launcher_version: int = None
     compliance_level: int = None
 
+    logging: Logging = None
+
     def __init__(self):
         self.libraries = []
 
@@ -77,6 +80,7 @@ class MojangManifest:
         manifest.java_version = JavaVersion.parse(data.get('javaVersion'))
         manifest.jar_files = GameDownloads.parse(data.get('downloads'))
         manifest.assets = AssetIndex.parse(data.get('assetIndex'))
+        manifest.logging = Logging.parse(data.get('logging'))
 
         if 'arguments' in data:
             manifest.arguments = GameArgumentSet.parse(data.get('arguments'))

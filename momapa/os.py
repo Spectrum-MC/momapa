@@ -18,6 +18,12 @@ class Architecture(Enum):
     UNKNOWN = 'unknown'
 
 
+class RuleAction(Enum):
+    ALLOW = 'allow'
+    DISALLOW = 'disallow'
+    UNKNOWN = 'unknown'
+
+
 # @TODO: Do some test to do other
 def map_to_generic_arch(arch: str):
     match arch:
@@ -38,7 +44,7 @@ def map_to_generic_os(os: str):
     match os:
         case 'Windows' | 'windows':
             return OS.WINDOWS
-        case 'Darwin' | 'macos':
+        case 'Darwin' | 'macos' | 'osx':
             return OS.OSX
         case 'Linux' | 'linux':
             return OS.LINUX
@@ -52,20 +58,29 @@ class AbstractArchitectureGetter(ABC):
         pass
 
     @abstractmethod
+    def get_os_version(self) -> str:
+        pass
+
+    @abstractmethod
     def get_arch(self) -> Architecture:
         pass
 
 
-class TestArchitectureGetter(AbstractArchitectureGetter):
+class ManualArchitectureGetter(AbstractArchitectureGetter):
     _os: OS = None
+    _os_ver: str = None
     _arch: Architecture = None
 
-    def __init__(self, os: OS, arch: Architecture):
+    def __init__(self, os: OS, os_ver: str, arch: Architecture):
         self._os = os
+        self._os_ver = os_ver
         self._arch = arch
 
     def get_os(self) -> OS:
         return self._os
+
+    def get_os_version(self) -> str:
+        return self._os_ver
 
     def get_arch(self) -> Architecture:
         return self._arch
@@ -81,6 +96,16 @@ class ArchitectureGetter(AbstractArchitectureGetter):
 
     def get_os(self) -> OS:
         return map_to_generic_os(self._os)
+
+    def get_os_version(self) -> str:
+        os = self.get_os()
+        if os == OS.OSX:
+            return platform.mac_ver()[0]
+
+        if os == OS.WINDOWS:
+            return platform.version()
+
+        return None
 
     def get_arch(self) -> Architecture:
         return map_to_generic_arch(self._arch)

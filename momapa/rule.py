@@ -1,17 +1,17 @@
 from typing import Optional, Self
 
-from .os import map_to_generic_arch, map_to_generic_os
+from .os import map_to_generic_arch, map_to_generic_os, RuleAction
 
 
 # @TODO to validate:
 # os: name, version (regex), arch
 # features: is_demo_user, has_custom_resolution
 class Rule:
-    action: str = None
+    action: RuleAction = None
     features: Optional[dict] = None
     os: Optional[dict] = None
 
-    def __init__(self, action: str, features: Optional[dict] = None, os: Optional[dict] = None):
+    def __init__(self, action: RuleAction, features: Optional[dict] = None, os: Optional[dict] = None):
         self.action = action
         self.features = features
         self.os = os
@@ -31,8 +31,16 @@ class Rule:
             if arch:
                 os['arch'] = map_to_generic_arch(arch)
 
+        action = data.get('action')
+        if action == 'allow':
+            action = RuleAction.ALLOW
+        elif action == 'disallow':
+            action = RuleAction.DISALLOW
+        else:
+            action = RuleAction.UNKNOWN
+
         return Rule(
-            data.get('action'),
+            action,
             data.get('features'),
             os,
         )

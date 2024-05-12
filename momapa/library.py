@@ -1,6 +1,6 @@
 from typing import List
 
-from .os import map_to_generic_arch, map_to_generic_os
+from .os import map_to_generic_arch, map_to_generic_os, RuleAction, OS
 from .file import PathFile
 from .rule import Rule
 
@@ -53,7 +53,7 @@ class GameLibrary:
         # For now we just override the rule
         # We'll see later if we need to do better stuff
         gl.rules = [
-            Rule('allow', os={
+            Rule(RuleAction.ALLOW, os={
                 'name': map_to_generic_os(native_type_arr[0]),
                 'arch': map_to_generic_arch(native_type_arr[1]),
             })
@@ -81,13 +81,40 @@ class GameLibrary:
         natives = data.get('natives', {})
         if natives:
             for k, v in natives.items():
-                # This will be a pain to flatten
-                # We need to append a rule to use it only on the given OS/Arch
-                # BUT we need to skip if there is already a rule for an OS and
-                # it doesn't match
-                # because Mojang still give all type of natives even though there
-                # is a rule to ignore them
-                pass
+                v = data.get('downloads', {}).get('classifiers', {}).get(v)
+                k = map_to_generic_os(k)
+
+                lib = GameLibrary()
+                lib.name = data.get('name')
+                lib.artifact = PathFile.parse(v)
+                lib.is_natives = True
+                lib.extract_natives = True if data.get('natives') else False
+
+                #region Hack for 1.8-ish versions OSX
+                # Those have natives-osx BUT ALSO
+                # DISALLOW OSX
+                # E.g. https://piston-meta.mojang.com/v1/packages/1fade4fe9d2587106ac3fa14775f9126d3198103/15w35e.json
+                # org.lwjgl.lwjgl:lwjgl-platform:2.9.4-nightly-20150209
+                should_skip = False
+                if k == OS.OSX:
+                    for r in data.get('rules', []):
+                        if r.get('action') != 'disallow':
+                            continue
+
+                        if r.get('os', {}).get('name') == OS.OSX:  # Not sure why its already parsed as enum here but heh
+                            should_skip = True
+
+                if should_skip:
+                    continue
+                #endregion
+
+                lib.rules = [
+                    Rule(RuleAction.ALLOW, None, {
+                        'name': k,
+                    })
+                ]
+
+                libs.append(lib)
 
         return libs
 

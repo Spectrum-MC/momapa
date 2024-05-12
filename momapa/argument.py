@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import List, Optional, Self
 
+from .os import RuleAction
 from .rule import Rule
 
 
@@ -12,7 +13,7 @@ class Argument:
     @staticmethod
     def parse(arg) -> Optional[Self]:
         if isinstance(arg, str):
-            return Argument([arg], [Rule('allow')])
+            return Argument([arg], [Rule(RuleAction.ALLOW)])
 
         values = arg.get('value')
         if not values:
@@ -58,6 +59,6 @@ class GameArgumentSet:
             return None
 
         return GameArgumentSet([
-            Argument([x], [Rule('allow')])
+            Argument([x], [Rule(RuleAction.ALLOW)])
             for x in arguments.split(' ')
         ], [])
