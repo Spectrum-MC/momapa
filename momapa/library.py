@@ -101,7 +101,7 @@ class GameLibrary:
                         if r.get('action') != 'disallow':
                             continue
 
-                        if r.get('os', {}).get('name') == OS.OSX:  # Not sure why its already parsed as enum here but heh
+                        if r.get('os', {}).get('name') == 'osx':
                             should_skip = True
 
                 if should_skip:

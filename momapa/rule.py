@@ -1,4 +1,5 @@
 from typing import Optional, Self
+from copy import deepcopy
 
 from .os import map_to_generic_arch, map_to_generic_os, RuleAction
 
@@ -21,7 +22,7 @@ class Rule:
         if not data:
             return None
 
-        os = data.get('os')
+        os = deepcopy(data.get('os'))
         if os:
             name = os.get('name')
             if name:

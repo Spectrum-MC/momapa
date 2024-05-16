@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='momapa',
-    version='0.1',
+    version='0.2',
     description='Simple library to parse and use Minecraft manifests',
     author='oxodao',
     license='GPLv3',
